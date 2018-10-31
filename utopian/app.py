@@ -189,7 +189,7 @@ def moderator_statistics(contributions):
     return {"moderators": moderator_list}
 
 
-def category_statistics(contributions):
+def category_statistics(contributions, include_score=False):
     """Returns a dictionary containing statistics about all categories."""
     categories = {}
     categories.setdefault(
@@ -260,7 +260,8 @@ def category_statistics(contributions):
             categories[category]["total_payout"] += total_payout
             categories[category]["utopian_total"].append(utopian_vote)
             categories[category]["authors_vote_weights"][author].append(utopian_vote)
-            categories[category]["authors_scores"][author].append(score)
+            if include_score:
+                categories[category]["authors_scores"][author].append(score)
 
             if score > 0:
                 categories[category]["average_without_0"].append(score)
@@ -611,7 +612,7 @@ def weekly(date):
                      for c in contributions.aggregate(pipeline)]
 
     # Get the data needed for all statistics
-    categories = category_statistics(contributions)
+    categories = category_statistics(contributions, include_score=True)
     staff_picks = staff_pick_statistics(contributions)
 
     # Get each section of the post
